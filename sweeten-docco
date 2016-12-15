@@ -16,8 +16,8 @@ sed_cmd() {
 
 SED=$( sed_cmd )
 
-if [[ -e 'docs' ]]; then
-  cd docs
+if [[ -e "$1" ]]; then
+  cd "$1"
 
   echo -n "Sweetening docco... "
 
