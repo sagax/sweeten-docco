@@ -23,8 +23,7 @@ if [[ -e "$1" ]]; then
 
   # Tag lists for JSDoc & Codo
   jsdocTags='uri request response facebook author constructor deprecated exception param private property return see this throws version'
-  codoTags='abstract author concern copyright deprecated example extend include note method mixin option overload param private return see since todo version'
-  redTags='fixme todo mustbe'
+  codoTags='abstract author concern copyright deprecated example extend include note method mixin option overload param private return see since version'
 
   # More tags...
   extendedTags='api'
@@ -66,6 +65,23 @@ if [[ -e "$1" ]]; then
   $SED $inParagraph' s/(@param|@property) +('$paramNameTokens')/\1 <code>\2<\/code>/' *.html
   $SED $inParagraph' s/(@param|@property|@return) ([^[{]*)'"$paramTypeBegin($paramTypeTokens)$paramTypeEnd"'/\1 \2<i>\3<\/i>/' *.html
   $SED $inParagraph' s/@('$anyTags')/<b>\1<\/b>/' *.html
+
+  redTags='fixme todo mustbe'
+
+  allTags=$( echo $redTags | uniq )
+  anyTags=$( echo $allTags | sed 's/ /|/g' )
+
+  inParagraph='/<p>/,/<\/p>/'
+
+  $SED $inParagraph' {
+    /<div class="doc-tag">/ b     # Skip if processed already
+    /@('$anyTags')/ s/</\&lt;/g    # These document typed arrays
+    /@('$anyTags')/ s/>/\&gt;/g
+  }' *.html
+
+  $SED $inParagraph' s/(@('$anyTags').*)/<div class="doc-tag">\1<\/div>/' *.html
+
+  $SED $inParagraph' s/@('$anyTags')/<b class="red">\1<\/b>/' *.html
 
   # Delete the sed backups
   rm *.html.orig
