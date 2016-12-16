@@ -69,11 +69,7 @@ if [[ -e "$1" ]]; then
   # Delete the sed backups
   rm *.html.orig
 
-  # Append doc-tag style to docco's css
-  echo '.doc-tag { color: #777; }' >> docco.css
-  echo '.doc-tag * { color: #222; }' >> docco.css
-
   echo "Done."
 else
-  echo "Directory 'docs' not found."
+  echo "Directory "$1" not found."
 fi
