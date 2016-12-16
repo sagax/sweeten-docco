@@ -22,15 +22,16 @@ if [[ -e "$1" ]]; then
   echo -n "Sweetening docco... "
 
   # Tag lists for JSDoc & Codo
-  jsdocTags='fixme todo uri request response facebook author constructor deprecated exception param private property return see this throws version'
+  jsdocTags='uri request response facebook author constructor deprecated exception param private property return see this throws version'
   codoTags='abstract author concern copyright deprecated example extend include note method mixin option overload param private return see since todo version'
+  redTags='fixme todo mustbe'
 
   # More tags...
   extendedTags='api'
 
   # Build a combined list, and regex to match any tag
-  allTags=$( echo $extendedTags $codoTags $jsdocTags | uniq )
-  anyTag=$( echo $allTags | sed 's/ /|/g' )
+  allTags=$( echo $extendedTags $codoTags $jsdocTags $redTags | uniq )
+  anyTags=$( echo $allTags | sed 's/ /|/g' )
 
   # Literal newline for sed substitution on Mac OS X
   newLine=$'\n'
@@ -45,12 +46,12 @@ if [[ -e "$1" ]]; then
   # HTML-escape angle brackets in tag statements
   $SED $inParagraph' {
     /<div class="doc-tag">/ b     # Skip if processed already
-    /@('$anyTag')/ s/</\&lt;/g    # These document typed arrays
-    /@('$anyTag')/ s/>/\&gt;/g
+    /@('$anyTags')/ s/</\&lt;/g    # These document typed arrays
+    /@('$anyTags')/ s/>/\&gt;/g
   }' *.html
 
   # Wrap each doc tag statement
-  $SED $inParagraph' s/(@('$anyTag').*)/<div class="doc-tag">\1<\/div>/' *.html
+  $SED $inParagraph' s/(@('$anyTags').*)/<div class="doc-tag">\1<\/div>/' *.html
 
   # Param pattern helpers
   paramTypeBegin='[[{]'
@@ -64,7 +65,7 @@ if [[ -e "$1" ]]; then
   $SED $inParagraph' s/(@param|@property) +('$paramType') +('$paramNameTokens')/\1 \3 \2/' *.html
   $SED $inParagraph' s/(@param|@property) +('$paramNameTokens')/\1 <code>\2<\/code>/' *.html
   $SED $inParagraph' s/(@param|@property|@return) ([^[{]*)'"$paramTypeBegin($paramTypeTokens)$paramTypeEnd"'/\1 \2<i>\3<\/i>/' *.html
-  $SED $inParagraph' s/@('$anyTag')/<b>\1<\/b>/' *.html
+  $SED $inParagraph' s/@('$anyTags')/<b>\1<\/b>/' *.html
 
   # Delete the sed backups
   rm *.html.orig
