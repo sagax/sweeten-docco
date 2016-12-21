@@ -22,7 +22,7 @@ if [[ -e "$1" ]]; then
   echo -n "Sweetening docco... "
 
   # Tag lists for JSDoc & Codo
-  jsdocTags='uri request response facebook author constructor deprecated exception param private property return see this throws version'
+  jsdocTags='repo desc uri request response facebook author constructor deprecated exception param private property return see this throws version'
   codoTags='abstract author concern copyright deprecated example extend include note method mixin option overload param private return see since version'
 
   # More tags...
